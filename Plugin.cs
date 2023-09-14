@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using Dalamud.Game;
@@ -11,7 +12,7 @@ using Dalamud.Logging;
 using Dalamud.Memory;
 using Dalamud.Plugin;
 using Dalamud.Utility;
-using FFXIVClientStructs.FFXIV.Client.Game;
+using FFXIVClientStructs.Interop;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 using Lumina.Excel.GeneratedSheets;
 using ValueType = FFXIVClientStructs.FFXIV.Component.GUI.ValueType;
@@ -37,7 +38,7 @@ namespace AutoLogin {
         public Plugin(DalamudPluginInterface pluginInterface) {
 
             pluginInterface.Create<Service>();
-            FFXIVClientStructs.Resolver.Initialize(Service.SigScanner.SearchBase);
+            Resolver.GetInstance.SetupSearchSpace(Service.SigScanner.SearchBase);
             this.PluginConfig = (Config)Service.PluginInterface.GetPluginConfig() ?? new Config();
             this.PluginConfig.Init(this);
 
@@ -142,7 +143,7 @@ namespace AutoLogin {
             
             
 
-            if (sw.ElapsedMilliseconds > 10000) {
+            if (sw.ElapsedMilliseconds > 60000) {
                 actionQueue.Clear();
                 return;
             }
